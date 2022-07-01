@@ -1,0 +1,29 @@
+Django App
+{% load socialaccount %}
+
+<h1>Django + Allauth</h1>
+{% if user.is_authenticated %}
+{% if messages %}
+<div>
+  <strong>Messages:</strong>
+  <ul>
+    {% for message in messages %}
+    <li>{{message}}</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
+<p>Welcome {{ user.username }} !!!</p>
+<ul>
+<li><a href="{% url 'auth_git' %}">Authorize Github</a></li>
+<li><a href="{% url 'account_email' %}">Change E-mail</a></li>
+<li><a href="{% url 'account_logout' %}">Sign Out</a></li>
+</ul>
+
+{% else %}
+<ul>
+<li><a href="{% provider_login_url 'google' %}">Google Sign Up</a></li>
+<li><a href="{% url 'account_login' %}">Sign In</a></li>
+<li><a href="{% url 'account_signup' %}">Sign Up</a></li>
+</ul>
+{% endif %}

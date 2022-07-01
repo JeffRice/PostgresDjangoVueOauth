@@ -1,0 +1,25 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+    <head>
+        
+
+    </head>
+    <body>
+        {{ userLogin|json_script:"hello-data" }}
+        <h1>Testing Vue...</h1>
+        <h2>Git Auth Response: {{response}}</h2>
+        <h2>Username: {{userLogin}}</h2>
+
+        
+        <div id="app"></div>
+
+        <script type="text/javascript" src="{% static 'src/vue/dist/js/chunk-vendors.js' %}"></script>
+        <script type="text/javascript" src="{% static 'src/vue/dist/js/app.js' %}"></script>
+        <link href="{% static 'src/vue/dist/css/app.css' %}" rel=stylesheet>
+    </body>
+</html>
+
+
+

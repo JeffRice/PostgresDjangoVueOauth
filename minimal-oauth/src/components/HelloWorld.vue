@@ -1,4 +1,6 @@
 <template>
+<ul id="network"></ul>
+
   <div class="hello">
     <h1>{{ msg }}</h1>
     <div>
@@ -13,8 +15,14 @@
 
   </div>
 
-      <button @click="testAxios" :disabled="!Vue3GoogleOauth.isAuthorized">Test Axios</button>
-      <button @click="authGithub" :disabled="!Vue3GoogleOauth.isAuthorized">Auth Github</button>
+      <button @click="testAxios" :disabled="!Vue3GoogleOauth.isAuthorized">Get Github Repos</button>
+
+
+      <div class="repos">
+      <ul></ul>
+      </div>
+
+     
 
 </template>
 
@@ -29,12 +37,20 @@ export default {
   props: {
     msg: String,
   },
+ mounted() {
+
+   const userLogin = this.userLogin = JSON.parse(document.getElementById('hello-data').textContent);
+
+  console.log(userLogin);
+  },
+
+
 
 
 
   data(){
     return {
-      user: '',
+      user: ''
     }
   },
   methods: {
@@ -82,31 +98,20 @@ export default {
       window.location.href = `https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout?continue=${window.location.href}`;
     },
     testAxios() {
-      axios.get('https://api.github.com/users/JeffRice/repos')
+     
+      axios.get('https://api.github.com/users/' + this.userLogin + '/repos')
   .then(function (response) {
     // handle success
     console.log(response);
-  })
-  .catch(function (error) {
-    // handle error
-    console.log(error);
-  })
-  .then(function () {
-    // always executed
-  });
-    },
-    authGithub() {
 
-   const headers = {  'Access-Control-Allow-Origin': '*',
-                       'Authorization': 'Bearer my-token'};
-   
-      axios.get("https://github.com/login/oauth/authorize?client_id=",
-       { headers }    
-   //   , params: {  client_id:  }
-    )
-  .then(function (response) {
-    // handle success
-    console.log(response);
+    var Data = response.data;
+    console.log(Data);
+
+    const reposDiv = document.getElementById('network');
+
+    for (let i = 0; i < Data.length; i++) {
+    reposDiv.innerHTML += "<li>Data: " + Data[i].full_name + "</li>";
+     }
   })
   .catch(function (error) {
     // handle error
@@ -114,8 +119,10 @@ export default {
   })
   .then(function () {
     // always executed
+
   });
     },
+
     
   },
   setup(props) {
