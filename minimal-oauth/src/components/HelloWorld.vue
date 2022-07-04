@@ -1,6 +1,4 @@
 <template>
-<ul id="network"></ul>
-
   <div class="hello">
     <h1>{{ msg }}</h1>
     <div>
@@ -12,20 +10,10 @@
       <button @click="handleClickSignOut" :disabled="!Vue3GoogleOauth.isAuthorized">sign out</button>
       <button @click="handleClickDisconnect" :disabled="!Vue3GoogleOauth.isAuthorized">disconnect</button>
     </div>
-
   </div>
-
       <button @click="testAxios" :disabled="!Vue3GoogleOauth.isAuthorized">Get Github Repos</button>
-
-
-      <div class="repos">
-      <ul></ul>
-      </div>
-
-     
-
-</template>
-
+        <div id="repos"></div>
+   </template>
 <script>
 
 
@@ -107,7 +95,7 @@ export default {
     var Data = response.data;
     console.log(Data);
 
-    const reposDiv = document.getElementById('network');
+    const reposDiv = document.getElementById('repos');
 
     for (let i = 0; i < Data.length; i++) {
     reposDiv.innerHTML += "<li>Data: " + Data[i].full_name + "</li>";

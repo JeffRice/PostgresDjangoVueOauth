@@ -16,8 +16,28 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.conf.urls import include
-
 from . import views
+
+#DRF
+from rest_framework import routers
+from notes.views import NoteViewSet, NoteList
+# Notes router
+notes_router = routers.SimpleRouter()
+
+notes_router.register(
+    r'notes',
+    NoteViewSet,
+    basename='note',
+)
+
+notes_router.register(
+    r'usernotes',
+    NoteViewSet,
+    basename='usernotes',
+)
+
+
+
 
 
 urlpatterns = [
@@ -29,4 +49,9 @@ urlpatterns = [
     path('auth_git', views.auth_git, name="auth_git"),
     path('authgit_callback', views.authgit_callback, name='authgit_callback'),
     path('auth_git_callback', views.auth_git_callback, name='auth_git_callback'),
+    # API
+    path('api/', include(notes_router.urls)),
+    path('api/usernotes', NoteList.as_view(), name="usernotes"),
+
+
 ]   

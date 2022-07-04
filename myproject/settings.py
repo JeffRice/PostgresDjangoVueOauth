@@ -47,6 +47,8 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.github',
     'crispy_forms',
+    'rest_framework',
+    'notes.apps.NotesConfig',
 ]
 
 CRISPY_TEMPLATE_PACK = 'uni_form'
@@ -62,9 +64,8 @@ SOCIALACCOUNT_PROVIDERS = {
         # (``socialaccount`` app) containing the required client
         # credentials, or list them here:
         'APP': {
-            'client_id': '236424343613-qilnesscd6immraissgld9n3q1b1pvfc.apps.googleusercontent.com',
-            'secret': '',
-            'key': ''
+
+
         },
  'SCOPE': [
             'profile',

@@ -10,6 +10,30 @@ def vue_test(request):
     return render(request, 'vueTest.html')
 
 def homepage(request):
+  userResult = requests.get('http://localhost:8000/api/usernotes?username=jeff')
+#  userResult = requests.get('http://localhost:8000/api/notes?user=jeff')
+  print(userResult)
+  print(userResult.status_code)
+  print(userResult.text)
+  print(userResult.json())
+
+  params = {
+    'token': '6a13b32ec7b4d657413e112318720ad81cffd31cccccc',
+    'user': 'jeff2'
+  }
+
+  
+  '''
+  testResult = requests.post('http://localhost:8000/api/notes/', data=params)
+
+  print(testResult)
+  print(testResult.status_code)
+  print(testResult.text)
+  print(testResult.json())
+  '''
+  current_user = request.user
+  print(current_user)
+
   return render(request, "home.html")
 
 def register(request):
@@ -30,6 +54,10 @@ def register(request):
 
 # This should maybe be renamed Git_Redirect?
 def auth_git(request):
+    #check if user has a token
+    current_user = request.user
+    print(current_user)
+
     client_id = '7016049256e3a53a9d63'
     scope = 'read:user'
     state = 'somerandomstring123'  # to prevent csrf
@@ -45,9 +73,7 @@ def authgit_callback(request):
     print(request)
    # print(request.access_token)
 
-
-
-    # after redirect
+     # after redirect
     params = {
         'client_id': '7016049256e3a53a9d63',
         'client_secret': '',
@@ -70,6 +96,8 @@ def authgit_callback(request):
 
 
     print(accessToken)
+
+    ##store token in database
 
     tokenHeader = 'token '
     authHeaderValue = tokenHeader + accessToken
