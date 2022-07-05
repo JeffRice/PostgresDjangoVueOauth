@@ -70,8 +70,8 @@ def auth_git(request):
           'Authorization': authHeaderValue,
       }
       userResult = requests.get('https://api.github.com/user', headers=userHeaders)
-      userLogin = userResult.json()['login']
-      return render(request, "auth_git_callback.html", {"response": userResult, "userLogin": userLogin})
+      gitLogin = userResult.json()['login']
+      return render(request, "auth_git_callback.html", {"response": userResult, "gitLogin": gitLogin, "djangoUser": current_user} )
 
     else:
       print('no user record found, creating one')  
@@ -96,6 +96,7 @@ def authgit_callback(request):
     # verify the state variable value for csrf
     code = request.GET.get('code', None)
     print(request)
+    print(request.user.username)
    # print(request.access_token)
 
      # after redirect
@@ -174,8 +175,8 @@ def authgit_callback(request):
                                                                                          ))
 
 
-    userLogin = userResult.json()['login']
-    return render(request, "auth_git_callback.html", {"response": userResult, "userLogin": userLogin})
+    gitLogin = userResult.json()['login'] 
+    return render(request, "auth_git_callback.html", {"response": userResult, "gitLogin": gitLogin})
 
 
 

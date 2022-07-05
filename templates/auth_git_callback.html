@@ -7,10 +7,13 @@
 
     </head>
     <body>
-        {{ userLogin|json_script:"hello-data" }}
+        {{ gitLogin|json_script:"git-name" }}
+        {{ djangoUser|json_script:"django-name" }}
         <h1>Testing Vue...</h1>
         <h2>Git Auth Response: {{response}}</h2>
-        <h2>Username: {{userLogin}}</h2>
+        <h2>Github Username: {{gitLogin}}</h2>
+        <h2>Django Username: {{djangoUser}}</h2>
+        csrf test : {% csrf_token %}
 
       
         <div id="app"></div>
