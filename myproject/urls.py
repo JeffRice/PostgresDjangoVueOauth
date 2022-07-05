@@ -20,7 +20,9 @@ from . import views
 
 #DRF
 from rest_framework import routers
-from notes.views import NoteViewSet, NoteList
+from notes.views import NoteViewSet, NoteList, NoteListed
+from rest_framework.urlpatterns import format_suffix_patterns
+from django.views.decorators.csrf import csrf_exempt
 # Notes router
 notes_router = routers.SimpleRouter()
 
@@ -51,7 +53,8 @@ urlpatterns = [
     path('auth_git_callback', views.auth_git_callback, name='auth_git_callback'),
     # API
     path('api/', include(notes_router.urls)),
-    path('api/usernotes', NoteList.as_view(), name="usernotes"),
-
+    path('api/usernotes', csrf_exempt(NoteList.as_view()), name="usernotes"),
+    path('api/usernotes/<int:pk>/', NoteListed.as_view()),
 
 ]   
+urlpatterns = format_suffix_patterns(urlpatterns, allowed=['json', 'html'])

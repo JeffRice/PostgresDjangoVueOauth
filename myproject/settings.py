@@ -65,7 +65,6 @@ SOCIALACCOUNT_PROVIDERS = {
         # credentials, or list them here:
         'APP': {
 
-
         },
  'SCOPE': [
             'profile',

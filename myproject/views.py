@@ -10,29 +10,18 @@ def vue_test(request):
     return render(request, 'vueTest.html')
 
 def homepage(request):
-  userResult = requests.get('http://localhost:8000/api/usernotes?username=jeff')
-#  userResult = requests.get('http://localhost:8000/api/notes?user=jeff')
+ # userResult = requests.get('http://localhost:8000/api/usernotes?username=jeff')
+  userResult = requests.get('http://localhost:8000/api/notes')
   print(userResult)
   print(userResult.status_code)
   print(userResult.text)
   print(userResult.json())
-
-  params = {
-    'token': '6a13b32ec7b4d657413e112318720ad81cffd31cccccc',
-    'user': 'jeff2'
-  }
-
   
-  '''
-  testResult = requests.post('http://localhost:8000/api/notes/', data=params)
 
-  print(testResult)
-  print(testResult.status_code)
-  print(testResult.text)
-  print(testResult.json())
-  '''
   current_user = request.user
   print(current_user)
+
+
 
   return render(request, "home.html")
 
@@ -52,19 +41,55 @@ def register(request):
   form = UserCreationForm()
   return render(request,"register.html", {"form": form})
 
+
+
 # This should maybe be renamed Git_Redirect?
 def auth_git(request):
     #check if user has a token
-    current_user = request.user
+    current_user = request.user.username
+    
     print(current_user)
+    print(request)
+    userResult = requests.get( f"http://localhost:8000/api/usernotes?username={current_user}")
 
-    client_id = '7016049256e3a53a9d63'
-    scope = 'read:user'
-    state = 'somerandomstring123'  # to prevent csrf
-    return redirect(
-        'https://github.com/login/oauth/authorize?client_id={}&scope={}&state={}'.format(client_id,
-                                                                                         scope, state,
-                                                                                         ))
+
+    print(userResult.json())
+
+   # if userResult.status_code != 200:
+
+    if userResult.json():
+      print(userResult.json()[0])  
+      accessToken = userResult.json()[0]['token']  
+      print(accessToken)
+      print('trying stored Token...')
+
+      tokenHeader = 'token '
+      authHeaderValue = tokenHeader + accessToken
+
+      userHeaders = {
+          'Authorization': authHeaderValue,
+      }
+      userResult = requests.get('https://api.github.com/user', headers=userHeaders)
+      userLogin = userResult.json()['login']
+      return render(request, "auth_git_callback.html", {"response": userResult, "userLogin": userLogin})
+
+    else:
+      print('no user record found, creating one')  
+      #userResult = requests.post( f"http://localhost:8000/api/usernotes?username=jefft3")
+      params = {
+          'token': 'no token yet',
+          'user': current_user,
+          'Content-Type': 'application/json'
+      }
+      userResult = requests.post('http://localhost:8000/api/notes/', data=params)
+
+      client_id = '7016049256e3a53a9d63'
+      scope = 'read:user'
+      state = 'somerandomstring123'  # to prevent csrf
+      return redirect(
+          'https://github.com/login/oauth/authorize?client_id={}&scope={}&state={}'.format(client_id,
+                                                                                           scope, state,
+                                                                                           ))
 
 
 def authgit_callback(request):
@@ -85,6 +110,9 @@ def authgit_callback(request):
         'Accept': 'application/json'
     }
 
+
+
+
     result = requests.post('https://github.com/login/oauth/access_token', data=params, headers=headers)
     print(result)
     print(result.text)
@@ -96,16 +124,31 @@ def authgit_callback(request):
 
 
     print(accessToken)
+    print(request.user.username)
 
     ##store token in database
+    
+    testparams = {
+      'token': accessToken,
+      'user': request.user.username
+    }
+
+   
+    
+    userResult = requests.get( f"http://localhost:8000/api/usernotes?username={request.user.username}")
+    print(userResult.json()[0]['id'])
+    currentId = userResult.json()[0]['id']
+
+    testResult = requests.put( f"http://localhost:8000/api/usernotes/{currentId}/", data=testparams)
+
+    print(testResult)
+    print(testResult.status_code)
+    print(testResult.text)
+    print(testResult.json())
+
 
     tokenHeader = 'token '
     authHeaderValue = tokenHeader + accessToken
-
-
-    userParams = {
-        'Authorization': authHeaderValue,
-    }
 
     userHeaders = {
         'Authorization': authHeaderValue,
@@ -121,7 +164,7 @@ def authgit_callback(request):
         print("Key exist in JSON data")
 
 
-    if userResult.status_code == 401:
+    if userResult.status_code != 200:
         client_id = '7016049256e3a53a9d63'
         scope = 'read:user'
         state = 'somerandomstring123'  # to prevent csrf
@@ -132,8 +175,6 @@ def authgit_callback(request):
 
 
     userLogin = userResult.json()['login']
-
-
     return render(request, "auth_git_callback.html", {"response": userResult, "userLogin": userLogin})
 
 
