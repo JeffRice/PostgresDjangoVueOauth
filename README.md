@@ -2,15 +2,15 @@
 
 <h6>Requirements:</h6>
 <ul>
-<li>Django Rest Framework<li>
+<li>Django Rest Framework</li>
 <li>Postgresql</li>
 <li>Needs a Google Oauth2 Client, information needs to be placed in myproject/settings.py: [Google Oauth2](https://developers.google.com/identity/protocols/oauth2) </li>
 <li>Needs a Github Oauth app, information needs to be placed in myproject/views.py: [Github Oauth Apps](https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app)</li>
-</<ul>>
+</ul>
 
 <h6>Requirements for Django:</h6>
 <ul>
-<li>found in requirements.txt<li>
+<li>found in requirements.txt</li>
 </ul>
 
 <h6>Requirements for Vue:</h6>
