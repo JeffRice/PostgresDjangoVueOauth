@@ -11,8 +11,8 @@
       <button @click="handleClickDisconnect" :disabled="!Vue3GoogleOauth.isAuthorized">disconnect</button>
     </div>
   </div>
-      <button @click="testAxios" :disabled="!Vue3GoogleOauth.isAuthorized">Get Github Repos</button>
-        <div id="repos"></div>
+      <button @click="testAxios">Get Github Repos</button>
+        <div @click="handleClick" id="repos"></div>
    </template>
 <script>
 
@@ -27,9 +27,13 @@ export default {
   },
  mounted() {
 
-   const userLogin = this.userLogin = JSON.parse(document.getElementById('hello-data').textContent);
+   const gitLogin = this.gitLogin = JSON.parse(document.getElementById('git-name').textContent);
+   const djangoLogin = this.djangoLogin = JSON.parse(document.getElementById('django-name').textContent);
+   const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
-  console.log(userLogin);
+  console.log(gitLogin);
+  console.log(djangoLogin);
+  console.log(csrftoken);
   },
 
 
@@ -38,7 +42,7 @@ export default {
 
   data(){
     return {
-      user: ''
+      user: '',  eventname: 'click',
     }
   },
   methods: {
@@ -85,9 +89,8 @@ export default {
     handleClickDisconnect() {
       window.location.href = `https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout?continue=${window.location.href}`;
     },
-    testAxios() {
-     
-      axios.get('https://api.github.com/users/' + this.userLogin + '/repos')
+    testAxios() {    
+      axios.get('https://api.github.com/users/' + this.gitLogin + '/repos')
   .then(function (response) {
     // handle success
     console.log(response);
@@ -98,7 +101,7 @@ export default {
     const reposDiv = document.getElementById('repos');
 
     for (let i = 0; i < Data.length; i++) {
-    reposDiv.innerHTML += "<li>Data: " + Data[i].full_name + "</li>";
+    reposDiv.innerHTML += "<li><button @click='handleClick' class='repoItem'>" + Data[i].name + "</button></li>";
      }
   })
   .catch(function (error) {
@@ -110,6 +113,61 @@ export default {
 
   });
     },
+handleClick(e) {
+      const elt = e.target.closest(".repoItem");
+      if (elt) {
+        console.log("this:", this)
+        console.log("elt:", elt)
+        console.log(elt.innerText)
+        const clickedRepo = elt.innerText
+        this.saveRepo(clickedRepo);
+      }
+
+    },
+saveRepo(clickedRepo) {
+  const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    console.log(csrftoken)
+      axios.get('http://localhost:8000/api/usernotes?username='  + this.djangoLogin)
+
+  .then(function (response) {
+    // handle success
+
+    console.log(response);
+    console.log(response.data);
+    console.log('previously chosen repo: ', response.data[0].selectedRepo);
+    console.log(clickedRepo);
+    console.log(response.data[0].id);
+
+
+    const userID = response.data[0].id;
+    let newRecord = response.data[0];
+    newRecord.selectedRepo = clickedRepo;
+
+
+    console.log(newRecord)
+
+
+let apiresponse = fetch("http://localhost:8000/api/usernotes/" + userID + "/", {
+    method: 'put',
+    body: JSON.stringify(newRecord),
+    headers: { "X-CSRFToken": csrftoken, 'Content-Type': 'application/json', },
+})
+
+console.log(apiresponse)
+
+
+
+  })
+  .catch(function (error) {
+    // handle error
+    console.log(error);
+  })
+  .then(function () {
+
+    // always executed
+
+  });
+},
 
     
   },
