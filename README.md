@@ -5,7 +5,7 @@
 - Django Rest Framework
 - Postgresql
 - Needs a Google Oauth2 Client, information needs to be placed in myproject/settings.py: [Google Oauth2](https://developers.google.com/identity/protocols/oauth2)
-- eeds a Github Oauth app, information needs to be placed in myproject/views.py: [Github Oauth Apps](https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app)
+- Needs a Github Oauth app, information needs to be placed in myproject/views.py: [Github Oauth Apps](https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app)
 
 
 ###### Requirements for Django:
